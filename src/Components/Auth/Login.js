@@ -1,7 +1,33 @@
 import touringImage from '../../static/touring1.jpg'
 import logo from '../../static/toured-logos.jpeg'
+import { login } from '../../API/auth'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
 
-export default function Login() {
+
+function Login(props) {
+  const [username, setUsername] = useState('') 
+  const [password, setPassword] = useState('') 
+  const [user, setUser] = useState(null)
+  const [redirectTo, setRedirectTo] = useState(false)
+  const handleLogin = async (event) => {
+    event.preventDefault()
+    try {
+      const user = await login({
+        username, password
+      })
+      setUser(user)
+      setUsername('')
+      setPassword('')
+      setRedirectTo(true)
+    } catch (exception) {
+      console.log(exception)
+    }
+    
+  }
+    if (redirectTo) {
+      return <Link to='/dashboard' />
+    }
     return (
       <>
         <div className="min-h-full flex">
@@ -18,17 +44,18 @@ export default function Login() {
   
               <div className="mt-8">
                 <div className="mt-6">
-                  <form action="#" method="POST" className="space-y-6">
+                  <form onSubmit={handleLogin} method="POST" className="space-y-6">
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                        Email address
+                      <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                        Username
                       </label>
                       <div className="mt-1">
                         <input
-                          id="email"
-                          name="email"
-                          type="email"
-                          autoComplete="email"
+                          id="username"
+                          name="username"
+                          type="username"
+                          autoComplete="username"
+                          onChange={({ target }) => setUsername(target.value)}
                           required
                           className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         />
@@ -45,6 +72,7 @@ export default function Login() {
                           name="password"
                           type="password"
                           autoComplete="current-password"
+                          onChange={({ target }) => setPassword(target.value)}
                           required
                           className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         />
@@ -89,3 +117,5 @@ export default function Login() {
       </>
     )
   }
+
+export default Login;
