@@ -2,7 +2,7 @@ import touringImage from '../../static/touring1.jpg'
 import logo from '../../static/toured-logos.jpeg'
 import { login } from '../../API/auth'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 
 
 function Login(props) {
@@ -21,12 +21,19 @@ function Login(props) {
       setPassword('')
       setRedirectTo(true)
     } catch (exception) {
-      console.log(exception)
+      // TODO add error handling 
+      if (exception.response.status >= 400 && exception.response.status < 500) {
+        alert(exception.response.data.error)
+      }
+      else {
+        alert("An unknown error occured on the server")
+      }
+      setRedirectTo(false)
     }
     
   }
     if (redirectTo) {
-      return <Link to='/dashboard' />
+      return <Navigate to='/dashboard' />
     }
     return (
       <>
